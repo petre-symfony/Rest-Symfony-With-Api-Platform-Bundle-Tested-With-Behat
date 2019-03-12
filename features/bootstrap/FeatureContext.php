@@ -1,7 +1,7 @@
 <?php
 
 use Behat\Behat\Context\Context;
-use Symfony\Component\HttpFoundation\Request;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -25,4 +25,21 @@ class FeatureContext implements Context {
   public function __construct(KernelInterface $kernel) {
     $this->kernel = $kernel;
   }
+
+  /**
+   * @BeforeScenario
+   */
+  public function clearData(){
+    $purger = new ORMPurger(
+      $this
+        ->getContainer()
+        ->get('doctrine.orm.entity_manager')
+    );
+    $purger->purge();
+  }
+  
+  public function getContainer(){
+    return $this->kernel->getContainer();
+  }
+
 }
