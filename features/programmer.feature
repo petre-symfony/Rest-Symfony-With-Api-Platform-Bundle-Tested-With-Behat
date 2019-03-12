@@ -20,15 +20,13 @@ Feature: Provide a consistent standard JSON API endpoint
       }
       """
 	  # Imbo\BehatApiExtension\Context\ApiContext::requestPath()
-	  When I request "api/programmers" using HTTP POST
+	  When I request for "api/programmers" using HTTP POST
 
 	  # Imbo\BehatApiExtension\Context\ApiContext::assertResponseCodeIs()
 	  Then the response code is 201
 	  And the response body contains JSON:
 	  """
       {
-	    "@context": "/api/contexts/Programmer",
-	    "@type": "Programmer",
 	    "nickname": "JavaProgrammer",
 	    "avatarNumber": 5,
 	    "tagLine": null,
