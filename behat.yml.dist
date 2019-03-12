@@ -4,9 +4,12 @@ default:
       contexts:
         - FeatureContext:
             kernel: '@kernel'
-
+        - Imbo\BehatApiExtension\Context\ApiContext
   extensions:
     Behat\Symfony2Extension:
       kernel:
         bootstrap: features/bootstrap/bootstrap.php
         class: App\Kernel
+    Imbo\BehatApiExtension:
+          apiClient:
+            base_uri: http://127.0.0.1:8443
