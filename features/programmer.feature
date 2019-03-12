@@ -24,6 +24,7 @@ Feature: Provide a consistent standard JSON API endpoint
 
 	  # Imbo\BehatApiExtension\Context\ApiContext::assertResponseCodeIs()
 	  Then the response code is 201
+	  And the response should have "_links.self" property
 	  And the response body contains JSON:
 	  """
       {

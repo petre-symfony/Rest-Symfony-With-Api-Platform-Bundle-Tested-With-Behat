@@ -110,6 +110,127 @@ class ApiExtendedContext extends ApiContext implements Context {
     }
   }
 
+  /**
+   * Assert that the response body should have the property
+   *
+   * @param string $property
+   * @throws AssertionFailedException
+   * @return void
+   *
+   * @Then the response should have :property property
+   */
+  public function assertResponseBodyContainsProperty($property) {
+    try {
+      // Search the property in array,  if not there this will throw an exception
+      Assertion::eq(
+        $this->searchPropertyInResponseBody($property),
+        true,
+        sprintf(
+          'Expected the response to has "%s" property, but has not.',
+          $property
+        )
+      );
+    } catch (AssertionFailure $e) {
+      throw new AssertionFailedException(
+        $e->getMessage()
+      );
+    }
+  }
+
+  /**
+   * Assert that the response body has not the property
+   *
+   * @param string $property
+   * @throws AssertionFailedException
+   * @return void
+   *
+   * @Then the response should have not :property property
+   */
+  public function assertResponseBodyNotContainsProperty($property) {
+    try {
+      // Search the property in array,  if not there this will throw an exception
+      Assertion::notSame(
+        $this->searchPropertyInResponseBody($property),
+        true,
+        sprintf(
+          'Expected the response not to has "%s" property, but has.',
+          $property
+        )
+      );
+    } catch (AssertionFailure $e) {
+      throw new AssertionFailedException(
+        $e->getMessage()
+      );
+    }
+  }
+
+  /**
+   * Assert that the response body has properties
+   *
+   * @param PyStringNode @propertiesString
+   * @throws AssertionFailedException
+   * @return void
+   *
+   * @Then the response should have properties:
+   */
+  public function assertResponseBodyContainsProperties(PyStringNode $propertiesString) {
+    $this->requireResponse();
+    // Get the decoded response body and make sure it's decoded to an array
+    $body = json_decode(json_encode($this->getResponseBody()), true);
+    $propertiesArray = explode("\n", (string) $propertiesString);
+    $foundProps = array_intersect(array_keys($body), $propertiesArray);
+    $diffProps = array_diff($propertiesArray, $foundProps);
+    try {
+      // Search the property in array,  if not there this will throw an exception
+      $failureMessage = count($foundProps) == 0 ?
+        sprintf(
+          'Expected the response to has "%s" properties, but has not.',
+          implode(',', $propertiesArray)
+        )
+        :
+        sprintf(
+          'Response has "%s" properties but has not "%s" properties',
+          implode(', ', $foundProps),
+          implode(', ', $diffProps)
+        )
+      ;
+      Assertion::eq(
+        count($foundProps),
+        count($propertiesArray),
+        $failureMessage
+      );
+    } catch (AssertionFailure $e) {
+      throw new AssertionFailedException(
+        $e->getMessage()
+      );
+    }
+  }
+
+  private function searchPropertyInResponseBody($property){
+    $this->requireResponse();
+    // Get the decoded response body and make sure it's decoded to an array
+    $body = json_decode(json_encode($this->getResponseBody()), true);
+    $found = true;
+    if (strpos($property, '.') !== false) {
+      $propertyArray = explode('.', $property);
+      $searchArray = $body;
+      $i = 0;
+      while($i < count($propertyArray)) {
+        if(!array_key_exists($propertyArray[$i], $searchArray)){
+          $found = false;
+          break;
+        }
+        $searchArray = $searchArray[$propertyArray[$i]];
+        $i += 1;
+      }
+    } else {
+      if (!array_key_exists($property, $body)){
+        $found = false;
+      }
+    }
+    return $found;
+  }
+
   private function processReplacements($payload){
     while (false !== $startPos = strpos($payload, '%')) {
       $endPos = strpos($payload, '%', $startPos + 1);
