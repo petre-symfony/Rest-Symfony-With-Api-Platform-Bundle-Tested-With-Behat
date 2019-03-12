@@ -61,8 +61,7 @@ Feature: Provide a consistent standard JSON API endpoint
         {
           "nickname": "JavaProgrammer",
           "avatarNumber": 5,
-          "tagLine": null,
-          "user": "/api/users/%users|weaverryan@google.com|id%"
+          "tagLine": null
         }
         """
 	  When I request for "/api/programmers/%programmers|last|id%" using HTTP PUT in "application/hal+json" format

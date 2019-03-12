@@ -13,6 +13,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *   attributes={
  *     "normalization_context" = {"groups"={"programmer.read"}},
  *     "denormalization_context" = {"groups"={"programmer.write"}}
+ *   },
+ *   itemOperations={
+ *     "put" = {
+ *        "denormalization_context" = {
+ *          "groups" = {
+ *            "programmer.update"
+ *          }
+ *        }
+ *     },
+ *     "get",
+ *     "delete"
  *   }
  * )
  */
@@ -40,14 +51,15 @@ class Programmer {
   /**
    * @ORM\Column(type="integer")
    * @Assert\Range(
-   *      min = 1,
-   *      max = 5,
-   *      minMessage = "You must enter at least {{ min}}",
-   *      maxMessage = "You must enter at most {{ max }}"
+   *   min = 1,
+   *   max = 5,
+   *   minMessage = "You must enter at least {{ min}}",
+   *   maxMessage = "You must enter at most {{ max }}"
    * )
    * @Groups({
    *   "programmer.read",
-   *   "programmer.write"
+   *   "programmer.write",
+   *   "programmer.update"
    * })
    */
   private $avatarNumber;
@@ -56,7 +68,8 @@ class Programmer {
    * @ORM\Column(type="string", length=255, nullable=true)
    * @Groups({
    *   "programmer.read",
-   *   "programmer.write"
+   *   "programmer.write",
+   *   "programmer.update"
    * })
    */
   private $tagLine;
@@ -64,12 +77,13 @@ class Programmer {
   /**
    * @ORM\Column(type="integer")
    * @Assert\Type(
-   *      type="integer",
-   *     message="The value {{ value }} is not a valid {{ type }}."
+   *   type="integer",
+   *   message="The value {{ value }} is not a valid {{ type }}."
    * )
    * @Groups({
    *   "programmer.read",
-   *   "programmer.write"
+   *   "programmer.write",
+   *   "programmer.update"
    * })
    */
   private $powerLevel = 0;
