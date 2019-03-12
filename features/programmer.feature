@@ -7,6 +7,7 @@ Feature: Provide a consistent standard JSON API endpoint
 	Background:
 	  # Imbo\BehatApiExtension\Context\ApiContext::setRequestHeader()
 	  Given the "Content-Type" request header is "application/json"
+	  And the user "weaverryan@google.com" exists
 
 	Scenario: Can add a new Programmer
 	  # Imbo\BehatApiExtension\Context\ApiContext::setRequestBody()
