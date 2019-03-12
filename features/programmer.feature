@@ -50,3 +50,28 @@ Feature: Provide a consistent standard JSON API endpoint
 		}
 		"""
 	  And the response should have not "_links.user" property
+
+
+	Scenario: Nickname Programmer Property can't be changed
+	  Given the following programmers exists:
+		|  nickname   | avatarNumber | tagLine |
+		| UnitTester  |       3      | Java    |
+	  And I have the request body:
+        """
+        {
+          "nickname": "JavaProgrammer",
+          "avatarNumber": 5,
+          "tagLine": null,
+          "user": "/api/users/%users|weaverryan@google.com|id%"
+        }
+        """
+	  When I request for "/api/programmers/%programmers|last|id%" using HTTP PUT in "application/hal+json" format
+	  Then the response code is 200
+	  And the response body contains JSON:
+	    """
+	    {
+		  "nickname": "UnitTester",
+		  "avatarNumber": 5,
+		  "tagLine": null
+	    }
+	    """
