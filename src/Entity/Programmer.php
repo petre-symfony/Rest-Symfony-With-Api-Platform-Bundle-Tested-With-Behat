@@ -5,22 +5,35 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProgrammerRepository")
- * @ApiResource()
+ * @ApiResource(
+ *   attributes={
+ *     "normalization_context" = {"groups"={"programmer.read"}},
+ *     "denormalization_context" = {"groups"={"programmer.write"}}
+ *   }
+ * )
  */
 class Programmer {
   /**
    * @ORM\Id()
    * @ORM\GeneratedValue()
    * @ORM\Column(type="integer")
+   * @Groups({
+   *   "programmer.read"
+   * })
    */
   private $id;
 
   /**
    * @ORM\Column(type="string", length=100, unique=true)
    * @Assert\NotBlank()
+   * @Groups({
+   *   "programmer.read",
+   *   "programmer.write"
+   * })
    */
   private $nickname;
 
@@ -32,11 +45,19 @@ class Programmer {
    *      minMessage = "You must enter at least {{ min}}",
    *      maxMessage = "You must enter at most {{ max }}"
    * )
+   * @Groups({
+   *   "programmer.read",
+   *   "programmer.write"
+   * })
    */
   private $avatarNumber;
 
   /**
    * @ORM\Column(type="string", length=255, nullable=true)
+   * @Groups({
+   *   "programmer.read",
+   *   "programmer.write"
+   * })
    */
   private $tagLine;
 
@@ -46,6 +67,10 @@ class Programmer {
    *      type="integer",
    *     message="The value {{ value }} is not a valid {{ type }}."
    * )
+   * @Groups({
+   *   "programmer.read",
+   *   "programmer.write"
+   * })
    */
   private $powerLevel = 0;
 
@@ -53,6 +78,9 @@ class Programmer {
    * @ORM\ManyToOne(targetEntity="App\Entity\User")
    * @ORM\JoinColumn(nullable=false)
    * @Assert\NotNull()
+   * @Groups({
+   *   "programmer.write"
+   * })
    */
   private $user;
 
