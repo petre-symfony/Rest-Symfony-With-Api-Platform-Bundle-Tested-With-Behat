@@ -17,6 +17,13 @@ class BattleRepository extends ServiceEntityRepository {
     parent::__construct($registry, Battle::class);
   }
 
+  public function findLastId(){
+    return $this->createQueryBuilder('u')
+      ->orderBy('u.id', 'DESC')
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult();
+  }
   // /**
   //  * @return Battle[] Returns an array of Battle objects
   //  */

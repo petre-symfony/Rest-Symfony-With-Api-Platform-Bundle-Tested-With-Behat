@@ -17,6 +17,13 @@ class ProgrammerRepository extends ServiceEntityRepository {
     parent::__construct($registry, Programmer::class);
   }
 
+  public function findLastId(){
+    return $this->createQueryBuilder('u')
+      ->orderBy('u.id', 'DESC')
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult();
+  }
   // /**
   //  * @return Programmer[] Returns an array of Programmer objects
   //  */

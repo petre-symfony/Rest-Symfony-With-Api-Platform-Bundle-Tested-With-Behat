@@ -11,11 +11,12 @@ Feature: Provide a consistent standard JSON API endpoint
 
 	Scenario: Can add a new Programmer
 	  # Imbo\BehatApiExtension\Context\ApiContext::setRequestBody()
-	  Given the request body is:
+	  Given I have the request body:
       """
       {
         "nickname": "JavaProgrammer",
-        "avatarNumber": 5
+        "avatarNumber": 5,
+        "user": "/api/users/%users|weaverryan@google.com|id%"
       }
       """
 	  # Imbo\BehatApiExtension\Context\ApiContext::requestPath()
@@ -23,3 +24,14 @@ Feature: Provide a consistent standard JSON API endpoint
 
 	  # Imbo\BehatApiExtension\Context\ApiContext::assertResponseCodeIs()
 	  Then the response code is 201
+	  And the response body contains JSON:
+	  """
+      {
+	    "@context": "/api/contexts/Programmer",
+	    "@type": "Programmer",
+	    "nickname": "JavaProgrammer",
+	    "avatarNumber": 5,
+	    "tagLine": null,
+	    "powerLevel": 0
+	  }
+	  """

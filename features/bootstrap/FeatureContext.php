@@ -53,6 +53,10 @@ class FeatureContext implements Context {
     return $this->kernel->getContainer();
   }
 
+  public function getEntityManager(){
+    return $this->getContainer()->get('doctrine.orm.entity_manager');
+  }
+
   private function createUser($email){
     $user = new User();
     $user->setEmail($email);
