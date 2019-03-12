@@ -37,7 +37,7 @@ class FeatureContext implements Context {
     );
     $purger->purge();
   }
-  
+
   public function getContainer(){
     return $this->kernel->getContainer();
   }
