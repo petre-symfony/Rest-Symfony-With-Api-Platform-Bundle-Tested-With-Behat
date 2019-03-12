@@ -26,11 +26,27 @@ Feature: Provide a consistent standard JSON API endpoint
 	  Then the response code is 201
 	  And the response should have "_links.self" property
 	  And the response body contains JSON:
-	  """
-      {
-	    "nickname": "JavaProgrammer",
-	    "avatarNumber": 5,
-	    "tagLine": null,
-	    "powerLevel": 0
-	  }
-	  """
+	    """
+        {
+	      "nickname": "JavaProgrammer",
+	      "avatarNumber": 5,
+	      "tagLine": null,
+	      "powerLevel": 0
+	    }
+	    """
+
+	Scenario: GET one Programmer
+	  Given the following programmers exists:
+		|  nickname   | avatarNumber |
+		| UnitTester  |       3      |
+	  When I request for "/api/programmers/%programmers|UnitTester|id%" using HTTP GET in "application/hal+json" format
+	  Then the response code is 200
+	  And the response body contains JSON:
+		"""
+        {
+		  "nickname": "UnitTester",
+		  "avatarNumber": 3,
+		  "tagLine": null
+		}
+		"""
+	  And the response should have not "_links.user" property

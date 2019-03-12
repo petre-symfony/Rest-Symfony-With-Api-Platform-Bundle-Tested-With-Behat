@@ -72,7 +72,8 @@ class ApiExtendedContext extends ApiContext implements Context {
    * @When I request for :path using HTTP :method in :format format
    */
   public function requestFormattedPath($path, $method = null, $format="application/hal+json") {
-    $formattedPath = $path . '.' . self::$formats[$format];
+    $decodedPath = $this->processReplacements($path);
+    $formattedPath = $decodedPath . '.' . self::$formats[$format];
     $this->setRequestPath($formattedPath);
     if (null === $method) {
       $this->setRequestMethod('GET', false);

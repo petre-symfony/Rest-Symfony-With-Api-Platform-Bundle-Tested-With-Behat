@@ -24,6 +24,13 @@ class UserRepository extends ServiceEntityRepository {
       ->getQuery()
       ->getOneOrNullResult();
   }
+
+  public function findAny(){
+    return $this->createQueryBuilder('u')
+      ->setMaxResults(1)
+      ->getQuery()
+      ->getOneOrNullResult();
+  }
   // /**
   //  * @return User[] Returns an array of User objects
   //  */

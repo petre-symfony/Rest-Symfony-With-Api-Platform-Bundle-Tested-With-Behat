@@ -5,7 +5,10 @@ use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use App\Entity\User;
+use App\Entity\Programmer;
 use Doctrine\ORM\EntityManagerInterface;
+use Behat\Gherkin\Node\TableNode;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * This context class contains the definitions of the steps used by the demo 
@@ -49,6 +52,16 @@ class FeatureContext implements Context {
   }
 
 
+  /**
+   * @Given the following programmers exists:
+   */
+  public function theFollowingProgrammersExists(TableNode $table) {
+    foreach ($table->getHash() as $row){
+      $this->createProgrammer($row, null);
+    }
+  }
+
+
   public function getContainer(){
     return $this->kernel->getContainer();
   }
@@ -66,5 +79,26 @@ class FeatureContext implements Context {
     $em->persist($user);
     $em->flush();
     return $user;
+  }
+
+  private function createProgrammer(array $data, User $owner=null){
+    $em = $this->getEntityManager();
+    $user = $owner ? $owner : $em->getRepository('App:User')->findAny();
+    $data['powerLevel'] = isset($data['powerLevel']) ? $data['powerLevel'] : rand(1, 10);
+    $data['avatarNumber'] = isset($data['avatarNumber']) ? $data['avatarNumber'] : rand(1, 5);
+    $data = array_merge(
+      [
+        'user'  => $user
+      ],
+      $data
+    );
+    $accessor = PropertyAccess::createPropertyAccessor();
+    $programmer = new Programmer();
+    foreach ($data as $key => $val) {
+      $accessor->setValue($programmer, $key, $val);
+    }
+    $em->persist($programmer);
+    $em->flush();
+    return $programmer;
   }
 }
