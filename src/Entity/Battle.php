@@ -5,11 +5,21 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Action\CreateBattle;
 
 /**
  * @ORM\Table(name="battle_battle")
  * @ORM\Entity(repositoryClass="App\Repository\BattleRepository")
- * @ApiResource()
+ * @ApiResource(
+ *   collectionOperations={
+ *     "get",
+ *     "post"={
+ *       "method"="POST",
+ *       "controller"=CreateBattle::class
+ *	   }
+ *	 }
+ *
+ * )
  */
 class Battle {
   /**
@@ -50,12 +60,6 @@ class Battle {
    * @Assert\NotBlank()
    */
   private $notes;
-  
-
-  public function setBattleWonByProgrammer($notes) {
-    $this->didProgrammerWin = true;
-    $this->notes = $notes;
-  }
 
   public function setBattleLostByProgrammer($notes){
     $this->didProgrammerWin = false;
@@ -89,6 +93,12 @@ class Battle {
   public function getFoughtAt(): ?\DateTimeInterface {
     return $this->foughtAt;
   }
+
+  public function setFoughtAt(){
+  	$this->foughtAt = new \DateTime();
+
+  	return $this;
+	}
 
   public function getDidProgrammerWin(): ?bool {
     return $this->didProgrammerWin;
